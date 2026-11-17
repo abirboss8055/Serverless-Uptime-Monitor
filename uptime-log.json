@@ -1,0 +1,28 @@
+[
+  {
+    "timestamp": "2026-11-17T10:08:16.738Z",
+    "results": [
+      {
+        "name": "My Serverless Pipeline",
+        "url": "https://abirboss8055.github.io/serverless-data-pipeline/",
+        "status": "UP",
+        "statusCode": 200,
+        "responseTime": 190
+      },
+      {
+        "name": "GitHub Status",
+        "url": "https://www.githubstatus.com/",
+        "status": "UP",
+        "statusCode": 200,
+        "responseTime": 117
+      },
+      {
+        "name": "Dummy API",
+        "url": "https://jsonplaceholder.typicode.com/todos/1",
+        "status": "UP",
+        "statusCode": 200,
+        "responseTime": 109
+      }
+    ]
+  }
+]
