@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Status | Uptime Monitor</title>
+    <!-- Tailwind CSS লোড করা হচ্ছে -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white p-8 font-sans antialiased">
+    <div class="max-w-4xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-10 border-b border-gray-700 pb-5">
+            <h1 class="text-3xl font-bold text-green-400 flex items-center gap-2">
+                <span class="animate-pulse">🟢</span> System Status
+            </h1>
+            <span id="last-updated" class="text-gray-400 text-sm mt-2 md:mt-0 font-mono bg-gray-800 px-3 py-1 rounded">
+                Fetching data...
+            </span>
+        </div>
+        
+        <!-- এই কন্টেইনারে জাভাস্ক্রিপ্ট নিজে নিজে ওয়েবসাইটের স্ট্যাটাস বসাবে -->
+        <div id="status-container" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        </div>
+    </div>
+
+    <script>
+        async function loadStatus() {
+            try {
+                // uptime-log.json থেকে ডেটা টানা হচ্ছে
+                const response = await fetch('uptime-log.json');
+                const logs = await response.json();
+                
+                if (logs.length === 0) return;
+                
+                // সবচেয়ে লেটেস্ট (শেষবারের) চেক করা ডেটা নেওয়া হচ্ছে
+                const latestRun = logs[0];
+                
+                document.getElementById('last-updated').innerText = "Last Checked: " + new Date(latestRun.timestamp).toLocaleString();
+                
+                const container = document.getElementById('status-container');
+                container.innerHTML = ''; // ক্লিয়ার করা হচ্ছে
+                
+                // প্রত্যেকটা সাইটের জন্য স্ট্যাটাস কার্ড বানানো হচ্ছে
+                latestRun.results.forEach(site => {
+                    const isUp = site.status === "UP";
+                    const statusColor = isUp ? "text-green-500" : "text-red-500";
+                    const borderColor = isUp ? "border-green-500/30" : "border-red-500/30";
+                    const bgColor = isUp ? "bg-green-500/10" : "bg-red-500/10";
+                    const icon = isUp ? "✅" : "⚠️";
+
+                    const card = document.createElement('div');
+                    card.className = `p-6 rounded-xl border ${borderColor} ${bgColor} flex justify-between items-center shadow-lg transition-transform hover:scale-[1.02]`;
+                    
+                    card.innerHTML = `
+                        <div class="overflow-hidden pr-4">
+                            <h2 class="text-xl font-bold tracking-wide">${site.name}</h2>
+                            <a href="${site.url}" target="_blank" class="text-xs text-gray-400 hover:text-blue-400 truncate block mt-1 transition-colors">${site.url}</a>
+                        </div>
+                        <div class="text-right whitespace-nowrap">
+                            <div class="text-2xl font-black ${statusColor} drop-shadow-md">${icon} ${site.status}</div>
+                            <div class="text-sm text-gray-400 mt-1 font-mono">${site.responseTime} ms</div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error("Error loading data:", error);
+                document.getElementById('status-container').innerHTML = '<p class="text-red-500 font-mono">⚠️ Failed to load status log. System offline.</p>';
+            }
+        }
+
+        loadStatus();
+    </script>
+</body>
+</html>
