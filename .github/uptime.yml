@@ -1,0 +1,35 @@
+name: API Uptime Monitor
+
+on:
+  schedule:
+    # প্রতি ২০ মিনিট পর পর রান করার জন্য
+    - cron: '*/20 * * * *'
+  # নিজে বাটনে ক্লিক করে রান করার জন্য
+  workflow_dispatch: 
+
+jobs:
+  check-uptime:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write 
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Monitor Script
+        run: node monitor.js
+
+      - name: Commit and Push Log
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Action"
+          git add uptime-log.json
+          git commit -m "Auto-update uptime log" || echo "No changes to commit"
+          git push
