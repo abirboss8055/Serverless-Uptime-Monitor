@@ -27,7 +27,7 @@ Serverless-Uptime-Monitor/
 ```
 
 🚀 Live Status Dashboard
-👉 View Live Uptime Dashboard Here
+👉 [View Live Uptime Dashboard Here](https://abirboss8055.github.io/Serverless-Uptime-Monitor/)
 
 ⚙️ How It Works
 Automated Ping: Every 20 minutes, GitHub Actions spins up an Ubuntu environment.
